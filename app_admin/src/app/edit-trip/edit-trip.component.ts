@@ -10,7 +10,7 @@ import { TripDataService } from '../services/trip-data.service';
 })
 export class EditTripComponent implements OnInit {
 
-  editForm; FormGroup;
+  editForm: FormGroup;
   submitted = false;
 
   constructor(
@@ -21,10 +21,11 @@ export class EditTripComponent implements OnInit {
 
   ngOnInit() {
     // retrieve stashed tripId
-    let tripCode = localStorage.getItem("tripCode");
+    let tripCode = localStorage.getItem('tripCode');
     if (!tripCode) {
+      console.error("Trip code not found in localStorage.");
       alert("Something wrong, couldn't find where I stashed tripCode!");
-      this.router.navigate(['']);
+      this.router.navigate(['listtrips']);
       return;
     }
     
@@ -53,14 +54,16 @@ export class EditTripComponent implements OnInit {
     })
    }
 
+   // will run when the submit button is selected on the page
     onSubmit() {
       this.submitted = true;
 
       if (this.editForm.valid) {
+        console.log('Form is valid, attempting to update')
         this.tripService.updateTrip(this.editForm.value)
           .then(data => {
             console.log(data);
-            this.router.navigate(['']);
+            this.router.navigate(['listtrips']);
           });
       }
     } 

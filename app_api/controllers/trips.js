@@ -115,7 +115,27 @@ const tripsUpdateTrip = async (req, res) => {
     )
 }
 
+const tripsDeleteTrip = async (req, res) => {
+    console.log(req.body);
+    console.log("tripsDeleteTrip has been reached, confirming user")
+    getUser(req, res,
+        (req, res) => {    
+        Trip
+            .findOneAndDelete({ 'code': req.params.tripCode }, (err, trip) => {
+                if (err) {
+                    return res.status(500).json(err);
+                }
+                if (!trip) {
+                    return res.status(404).json({ "message": "Trip not found" });
+                }
+                return res.status(200).json({ "message": "Trip deleted successfully" });
+            });
+        }
+    )
+};
+
 const getUser = (req, res, callback) => {
+    console.log("getUser has been reached, Validating user")
     if (req.payload && req.payload.email) {
         User
             .findOne({ email: req.payload.email })
@@ -145,5 +165,6 @@ module.exports = {
     tripsList,
     tripsFindByCode,
     tripsAddTrip,
-    tripsUpdateTrip
+    tripsUpdateTrip,
+    tripsDeleteTrip
 };
